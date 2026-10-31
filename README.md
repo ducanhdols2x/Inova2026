@@ -1,71 +1,71 @@
 
 ---
 
-# 📦 Hệ thống Nhận diện Sản phẩm sử dụng RFID MFRC522 với Arduino
+# 📦 RFID MFRC522 Product Identification System with Arduino
 
-Dự án này sử dụng module đọc thẻ RFID **MFRC522** kết hợp với vi điều khiển Arduino để đọc mã UID của thẻ/móc khóa RFID, từ đó nhận diện và phân loại sản phẩm (Sản phẩm A hoặc Sản phẩm B) dựa trên danh sách UID đã được định nghĩa sẵn trong chương trình.
-
----
-
-## 🛠️ Linh kiện cần chuẩn bị
-
-1. **Vi điều khiển Arduino** (Arduino Uno, Nano, Mega,...)
-2. **Module đọc RFID MFRC522** (kèm thẻ hoặc móc khóa MIFARE Classic 1K)
-3. **Dây cắm breadboard** (Male to Female, Male to Male)
-4. **Cáp kết nối USB** (để nạp code và kết nối Serial Monitor)
+This project uses the **MFRC522** RFID reader module combined with an Arduino microcontroller to read the UID code of RFID tags/key fobs, thereby identifying and classifying products (Product A or Product B) based on a pre-defined list of UIDs in the code.
 
 ---
 
-## 🔌 Sơ đồ kết nối chân (Wiring)
+## 🛠️ Required Components
 
-| Module MFRC522 | Arduino Uno / Nano | Chức năng |
+1. **Arduino Microcontroller** (Arduino Uno, Nano, Mega, etc.)
+2. **MFRC522 RFID Reader Module** (with MIFARE Classic 1K tag or key fob)
+3. **Jumper Wires** (Male-to-Female, Male-to-Male)
+4. **USB Cable** (for power supply, uploading code, and Serial Monitor debugging)
+
+---
+
+## 🔌 Pin Wiring Setup
+
+| MFRC522 Module | Arduino Uno / Nano | Function |
 | --- | --- | --- |
-| **RST** | Pin 9 | Chân Reset |
-| **SDA (SS)** | Pin 10 | Chân Slave Select |
-| **MOSI** | Pin 11 | Giao tiếp SPI |
-| **MISO** | Pin 12 | Giao tiếp SPI |
-| **SCK** | Pin 13 | Xung nhịp SPI |
-| **GND** | GND | Nguồn âm |
-| **3.3V** | 3.3V | Nguồn dương (**Lưu ý: Không dùng cổng 5V vì có thể làm cháy module**) |
+| **RST** | Pin 9 | Reset Pin |
+| **SDA (SS)** | Pin 10 | Slave Select Pin |
+| **MOSI** | Pin 11 | SPI Communication |
+| **MISO** | Pin 12 | SPI Communication |
+| **SCK** | Pin 13 | SPI Clock |
+| **GND** | GND | Ground |
+| **3.3V** | 3.3V | Power Supply (**Note: Do NOT use the 5V pin as it can damage the module**) |
 
-> *Lưu ý mở rộng:* Trong chương trình, chân `4` và `5` đã được cấu hình là `OUTPUT` (`pinMode(4, OUTPUT)`, `pinMode(5, OUTPUT)`), bạn có thể tận dụng để điều khiển LED hoặc Relay khi quét đúng sản phẩm tương ứng.
-
----
-
-## 📚 Thư viện yêu cầu
-
-Trước khi nạp code, bạn cần cài đặt thư viện **MFRC522** trong Arduino IDE:
-
-1. Mở Arduino IDE.
-2. Vào **Tools** > **Manage Libraries...** (hoặc nhấn `Ctrl + Shift + I`).
-3. Tìm kiếm từ khóa **`MFRC522`** (bởi *GithubCommunity* hoặc *Miguel Balboa*).
-4. Nhấn **Install**.
-5. Thư viện `SPI.h` là thư viện có sẵn, không cần cài đặt thêm.
+> *Note:* In the code, digital pins `4` and `5` are configured as outputs (`pinMode(4, OUTPUT)`, `pinMode(5, OUTPUT)`). You can connect LEDs or Relays to these pins to trigger actions when a specific product is scanned.
 
 ---
 
-## ⚙️ Cấu hình Mã UID Sản phẩm
+## 📚 Required Libraries
 
-Trong mã nguồn, bạn có thể thay đổi mã UID của sản phẩm cho phù hợp với thẻ thực tế của bạn bằng cách chỉnh sửa mảng `spA` và `spB`:
+Before uploading the code, install the **MFRC522** library in the Arduino IDE:
+
+1. Open Arduino IDE.
+2. Go to **Tools** > **Manage Libraries...** (or press `Ctrl + Shift + I`).
+3. Search for **`MFRC522`** (by *GithubCommunity* or *Miguel Balboa*).
+4. Click **Install**.
+5. The `SPI.h` library comes built-in with the Arduino IDE, so no separate installation is required.
+
+---
+
+## ⚙️ Configuring Product UIDs
+
+You can customize the product UIDs to match your actual RFID tags by modifying the `spA` and `spB` arrays in the source code:
 
 ```cpp
-int spA[4] = {0x4C, 0x16, 0x27, 0x07}; // UID sản phẩm A
-int spB[4] = {0x56, 0xA9, 0x26, 0x07}; // UID sản phẩm B
+int spA[4] = {0x4C, 0x16, 0x27, 0x07}; // Product A UID
+int spB[4] = {0x56, 0xA9, 0x26, 0x07}; // Product B UID
 
 ```
 
 ---
 
-## 🚀 Hướng dẫn Sử dụng
+## 🚀 How to Use
 
-1. Kết nối phần cứng Arduino với module MFRC522 theo bảng sơ đồ phía trên.
-2. Mở **Arduino IDE**, copy đoạn code của bạn vào và chọn đúng cổng **Board** và **Port**.
-3. Nhấn **Upload** để nạp chương trình vào Arduino.
-4. Mở **Serial Monitor** trên Arduino IDE và chỉnh tốc độ baud về **`9600`**.
-5. Đưa thẻ RFID lại gần module MFRC522:
-* Nếu thẻ thuộc **Sản phẩm A**, màn hình sẽ hiển thị: `Day la san pham A`
-* Nếu thẻ thuộc **Sản phẩm B**, màn hình sẽ hiển thị: `Day la san pham B`
-* Nếu thẻ mới chưa định nghĩa, chương trình sẽ in ra mã Hex của thẻ để bạn dễ dàng cấu hình thêm.
+1. Wire the Arduino to the MFRC522 module according to the pinout table above.
+2. Open **Arduino IDE**, paste the code, and select the correct **Board** and **Port**.
+3. Click **Upload** to upload the program to your Arduino board.
+4. Open the **Serial Monitor** in Arduino IDE and set the baud rate to **`9600`**.
+5. Swipe an RFID tag near the MFRC522 module:
+* If the tag matches **Product A**, the monitor displays: `Day la san pham A`
+* If the tag matches **Product B**, the monitor displays: `Day la san pham B`
+* If a new or unassigned tag is detected, the program will print its Hex UID so you can add it to your program easily.
 
 
 
